@@ -85,11 +85,6 @@ jobs:
         uses: actions/checkout@v3
       - name: Render Compose File
         run: |
-#          APP_IMAGE=$(echo ${{ needs.build-application.outputs.tags }})
-#          export APP_IMAGE
-#          DB_IMAGE=$(echo ${{ needs.build-db.outputs.tags }})
-#          export DB_IMAGE
-          # Render simple template from environment variables.
           export $(cat ./examples/docker-compose/.env.example | xargs)
           envsubst < ./examples/docker-compose/uffizzi/docker-compose.uffizzi.yml > docker-compose.rendered.yml
           cat docker-compose.rendered.yml
