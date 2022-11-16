@@ -85,8 +85,8 @@ jobs:
         uses: actions/checkout@v3
       - name: Render Compose File
         run: |
-          export $(cat ./examples/docker-compose/.env.example | xargs)
-          envsubst < ./examples/docker-compose/uffizzi/docker-compose.uffizzi.yml > docker-compose.rendered.yml
+          export $(cat ./examples/docker-compose/.env.uffizzi | xargs)
+          envsubst < ./examples/docker-compose/docker-compose.uffizzi.yaml > docker-compose.rendered.yml
           cat docker-compose.rendered.yml
       - name: Upload Rendered Compose File as Artifact
         uses: actions/upload-artifact@v3
