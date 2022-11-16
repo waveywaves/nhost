@@ -20,14 +20,14 @@ services:
       - "9090:8080"
     restart: always
     volumes: 
-      - ./traefik.yaml:/traefik/traefik.yaml
+      - ./examples/docker-compose/traefik.yaml:/traefik/traefik.yaml
 
   postgres:
     image: postgres:14.6
     restart: always
-    volumes:
-      - ./data/db:/var/lib/postgresql/data
-      - ./initdb.d:/docker-entrypoint-initdb.d:ro
+#    volumes:
+#      - ./data/db:/var/lib/postgresql/data
+#      - ./initdb.d:/docker-entrypoint-initdb.d:ro
     environment:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     ports:
@@ -57,8 +57,8 @@ services:
       - postgres
       - graphql-engine
     restart: always
-    volumes:
-      - ./emails:/app/email-templates
+#    volumes:
+#      - ./emails:/app/email-templates
     environment:
       AUTH_HOST: '0.0.0.0'
       HASURA_GRAPHQL_DATABASE_URL: postgres://postgres:${POSTGRES_PASSWORD}@localhost:5432/postgres
@@ -137,8 +137,8 @@ services:
       MINIO_ROOT_PASSWORD: ${STORAGE_SECRET_KEY}
     ports:
       - 8484:8484
-    volumes:
-      - ./data/minio:/data
+#    volumes:
+#      - ./data/minio:/data
 
   mailhog:
     depends_on:
@@ -156,8 +156,8 @@ services:
     ports:
       - 1024:1025 
       - 8025:8025
-    volumes:
-      - ./data/mailhog:/maildir
+#    volumes:
+#      - ./data/mailhog:/maildir
 
 volumes:
   functions_node_modules:
