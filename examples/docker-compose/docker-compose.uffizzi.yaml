@@ -69,7 +69,7 @@ services:
   functions:
     image: nhost/functions:latest
     volumes:
-      - .:/opt/project
+      - ./:/opt/project
       - functions_node_modules:/opt/project/node_modules
       - /opt/project/data/
       - /opt/project/initdb.d/
