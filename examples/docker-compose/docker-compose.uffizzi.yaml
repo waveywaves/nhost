@@ -67,7 +67,7 @@ services:
       S3_ENDPOINT: http://localhost:8484
       S3_BUCKET: nhost
       POSTGRES_MIGRATIONS: 1
-      POSTGRES_MIGRATIONS_SOURCE: 'postgres@localhost:5432/postgres?sslmode=disable'
+      POSTGRES_MIGRATIONS_SOURCE: 'postgres:pg-password-never-use-this-value@localhost:5432/postgres?sslmode=disable'
     command: serve
 
   functions:
@@ -80,13 +80,13 @@ services:
 
   minio:
     image: 'minio/minio:latest'
-    entrypoint: sh
-    command: -c 'mkdir -p /data/nhost && /opt/bin/minio server --address :8484 /data'
+    entrypoint: ['/bin/sh', '-c']
+    command: 'mkdir -p /data/nhost && /opt/bin/minio server --address :8484 /data'
     environment:
       MINIO_ROOT_USER: storage-access-key-never-use-this-value
       MINIO_ROOT_PASSWORD: storage-secret-key-never-use-this-value
-#    volumes:
-#      - ./data/minio:/data
+    volumes:
+      - /data
 
   mailhog:
     image: mailhog/mailhog
