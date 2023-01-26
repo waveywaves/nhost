@@ -17,9 +17,9 @@ services:
 
   postgres:
     image: postgres:14.6
-#    volumes:
-#      - ./data/db:/var/lib/postgresql/data
-#      - ./initdb.d:/docker-entrypoint-initdb.d:ro
+    volumes:
+      - /var/lib/postgresql/data
+      - ./examples/docker-compose/initdb.d/:/docker-entrypoint-initdb.d:ro
     environment:
       POSTGRES_PASSWORD: pg-password-never-use-this-value
 
