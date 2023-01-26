@@ -39,15 +39,15 @@ http:
       - strip-functions
 
   middlewares:
-    strip-auth:
-      stripPrefix:
+    strip-auth: 
+      stripPrefix: 
         prefixes:
         - /v1/auth
-    strip-functions:
-      stripPrefix:
+    strip-functions: 
+      stripPrefix: 
         prefixes:
         - /v1/functions
-    strip-suffix:
+    strip-suffix: 
       replacePathRegex:
         regex: "^/v1/storage/(.*)"
         replacement: "/v1/$1"
@@ -69,3 +69,5 @@ http:
       loadBalancer:
         servers:
         - url: http://functions:3000/
+    
+    

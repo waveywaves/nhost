@@ -12,7 +12,7 @@ services:
       - "--api.insecure=true"
       - "--entrypoints.web.address=:1337"
       - "--providers.file.directory=/traefik"
-    volumes:
+    volumes: 
       - ./examples/docker-compose/traefik.yaml:/traefik/traefik.yaml
 
   postgres:
@@ -54,7 +54,7 @@ services:
       AUTH_SMTP_USER: user
       AUTH_SMTP_PASS: password
       AUTH_SMTP_SENDER: mail@example.com
-
+  
   storage:
     image: nhost/hasura-storage:0.2.1
     environment:
