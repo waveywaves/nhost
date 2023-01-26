@@ -15,26 +15,26 @@ http:
       entryPoints:
       - web
       service: graphql-engine
-      rule: Host(`localhost`) && PathPrefix(`/`)
+      rule: PathPrefix(`/`)
     auth:
       entryPoints:
       - web
       service: auth
-      rule: Host(`localhost`) && PathPrefix(`/v1/auth`)
+      rule: PathPrefix(`/v1/auth`)
       middlewares:
       - strip-auth
     storage:
       entryPoints:
       - web
       service: storage
-      rule: Host(`localhost`) && PathPrefix(`/v1/storage`)
+      rule: PathPrefix(`/v1/storage`)
       middlewares:
       - strip-suffix
     functions:
       entryPoints:
       - web
       service: graphql-engine
-      rule: Host(`localhost`) && PathPrefix(`/v1/functions`)
+      rule: PathPrefix(`/v1/functions`)
       middlewares:
       - strip-functions
 

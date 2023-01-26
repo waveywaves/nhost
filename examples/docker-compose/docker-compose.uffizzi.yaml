@@ -13,10 +13,10 @@ services:
       - "--entrypoints.web.address=:1337"
       - "--providers.file.directory=/traefik"
     volumes: 
-      - ./examples/docker-compose/traefik.yaml:/traefik/traefik.yaml
+      - ./examples/docker-compose/traefik.yaml:/traefik/
 
   postgres:
-    image: postgres:14.6
+    image: postgres
     volumes:
       # - /var/lib/postgresql/data
       - ./examples/docker-compose/initdb.d/:/docker-entrypoint-initdb.d:ro
@@ -24,7 +24,7 @@ services:
       POSTGRES_PASSWORD: pg-password-never-use-this-value
 
   graphql-engine:
-    image: hasura/graphql-engine:v2.2.0
+    image: hasura/graphql-engine:v2.15.2
     environment:
       HASURA_GRAPHQL_DATABASE_URL: 'postgres://postgres:pg-password-never-use-this-value@localhost:5432/postgres'
       HASURA_GRAPHQL_JWT_SECRET: '{"type":"HS256", "key":"5152fa850c02dc222631cca898ed1485821a70912a6e3649c49076912daa3b62182ba013315915d64f40cddfbb8b58eb5bd11ba225336a6af45bbae07ca873f3","issuer":"hasura-auth"}'
@@ -39,7 +39,7 @@ services:
           memory: 250M
 
   auth:
-    image: nhost/hasura-auth:latest
+    image: nhost/hasura-auth:0.16.2
 #    volumes:
 #      - ./emails:/app/email-templates
     environment:
@@ -56,7 +56,7 @@ services:
       AUTH_SMTP_SENDER: mail@example.com
   
   storage:
-    image: nhost/hasura-storage:0.2.1
+    image: nhost/hasura-storage:0.3.1
     environment:
       PUBLIC_URL: http://localhost:1337
       HASURA_METADATA: 1
@@ -71,7 +71,7 @@ services:
     command: serve
 
   functions:
-    image: nhost/functions:latest
+    image: nhost/functions:0.1.8
     volumes:
       # - ./:/opt/project
       - functions_node_modules:/opt/project/node_modules
@@ -99,6 +99,11 @@ services:
       SMTP_SENDER: hbp@hbp.com
 #    volumes:
 #      - ./data/mailhog:/maildir
+
+  dashboard:
+    image: nhost/dashboard:0.7.4
+    ports:
+      - "3030:3000"
 
 volumes:
   functions_node_modules:
