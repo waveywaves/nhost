@@ -67,7 +67,7 @@ services:
       S3_ENDPOINT: http://localhost:8484
       S3_BUCKET: nhost
       POSTGRES_MIGRATIONS: 1
-      POSTGRES_MIGRATIONS_SOURCE: 'postgres:pg-password-never-use-this-value@localhost:5432/postgres?sslmode=disable'
+      POSTGRES_MIGRATIONS_SOURCE: 'postgres://postgres:pg-password-never-use-this-value@localhost:5432/postgres?sslmode=disable'
     command: serve
 
   functions:
