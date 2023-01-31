@@ -16,9 +16,9 @@ server {
                location /v1/functions/ {
                  proxy_pass      http://localhost:${FUNCTIONS_PORT}/;
                }
-//               location /dashboard/ {
-//                 proxy_pass      http://localhost:${DASHBOARD_PORT}/;
-//               }
+#               location /dashboard/ {
+#                 proxy_pass      http://localhost:${DASHBOARD_PORT}/;
+#               }
                location /mailhog/ {
                  proxy_pass      http://localhost:${MAILHOG_PORT}/;
                }
