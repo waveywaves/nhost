@@ -1,0 +1,28 @@
+server {
+               listen       ${PORT};
+               server_name  localhost;
+               location / {
+                 proxy_pass      http://localhost:${CONSOLE_PORT}/;
+               }
+               location /v1/graphql/ {
+                 proxy_pass      http://localhost:${GRAPHQL_PORT}/;
+               }
+               location /v1/auth/ {
+                 proxy_pass      http://localhost:${AUTH_PORT}/;
+               }
+               location /v1/storage/ {
+                 proxy_pass      http://localhost:${STORAGE_PORT}/;
+               }
+               location /v1/functions/ {
+                 proxy_pass      http://localhost:${FUNCTIONS_PORT}/;
+               }
+//               location /dashboard/ {
+//                 proxy_pass      http://localhost:${DASHBOARD_PORT}/;
+//               }
+               location /mailhog/ {
+                 proxy_pass      http://localhost:${MAILHOG_PORT}/;
+               }
+               location /minio/ {
+                 proxy_pass      http://localhost:${MINIO_PORT}/;
+               }
+}

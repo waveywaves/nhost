@@ -2,19 +2,10 @@ version: '3.6'
 
 x-uffizzi:
   ingress:
-    service: traefik
-    port: 1337
+    service: loadbalancer
+    port: 8888
 
 services:
-  traefik:
-    image: "traefik:v2.5"
-    command:
-      - "--api.insecure=true"
-      - "--entrypoints.web.address=:1337"
-      - "--providers.file.directory=/traefik"
-    volumes: 
-      - ./examples/docker-compose/traefik.yaml:/traefik/
-
   postgres:
     image: postgres
     volumes:
@@ -44,11 +35,12 @@ services:
 #      - ./emails:/app/email-templates
     environment:
       AUTH_HOST: '0.0.0.0'
+      AUTH_PORT: 4000
       HASURA_GRAPHQL_DATABASE_URL: 'postgres://postgres:pg-password-never-use-this-value@localhost:5432/postgres'
       HASURA_GRAPHQL_GRAPHQL_URL: http://localhost:8081/v1/graphql
       HASURA_GRAPHQL_JWT_SECRET: '{"type":"HS256", "key":"5152fa850c02dc222631cca898ed1485821a70912a6e3649c49076912daa3b62182ba013315915d64f40cddfbb8b58eb5bd11ba225336a6af45bbae07ca873f3","issuer":"hasura-auth"}'
       HASURA_GRAPHQL_ADMIN_SECRET: hello123
-      AUTH_CLIENT_URL: http://localhost:3000
+      AUTH_CLIENT_URL: http://localhost:4000
       AUTH_SMTP_HOST: mailhog
       AUTH_SMTP_PORT: 1025
       AUTH_SMTP_USER: user
@@ -97,13 +89,33 @@ services:
       SMTP_USER: user
       SMTP_SECURE: 'false'
       SMTP_SENDER: hbp@hbp.com
-#    volumes:
+    volumes:
+      - /maildir
 #      - ./data/mailhog:/maildir
 
-  dashboard:
-    image: nhost/dashboard:0.7.4
-    ports:
-      - "3030:3000"
+#  dashboard:
+#    image: nhost/dashboard:0.7.4
+#    ports:
+#      - "3030:3000"
+
+  loadbalancer:
+    image: nginx:1
+    environment:
+      PORT: "8888"
+      GRAPHQL_PORT: "8080"
+      AUTH_PORT: "4000"
+      STORAGE_PORT: "8000"
+      FUNCTIONS_PORT: "3000"
+      DASHBOARD_PORT: "3000"
+      HASHURA_PORT: "1337"
+      MAILHOG_PORT: "8025"
+      MINIO_PORT: "8484"
+    volumes:
+      - ./examples/docker-compose/nginx:/etc/nginx/templates
+    deploy:
+      resources:
+        limits:
+          memory: 125M
 
 volumes:
   functions_node_modules:
