@@ -111,7 +111,7 @@ services:
       MAILHOG_PORT: "8025"
       MINIO_PORT: "8484"
     volumes:
-      - ./examples/docker-compose/nginx:/etc/nginx/templates
+      - ./examples/docker-compose/nginx/:/etc/nginx/templates
     deploy:
       resources:
         limits:
