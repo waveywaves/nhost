@@ -1,7 +1,5 @@
+import { NhostSession } from '@nhost/react'
 import { GetServerSidePropsContext } from 'next'
-
-import { NhostSession } from '@nhost/core'
-
 import { createServerSideClient } from './create-server-side-client'
 
 /**
@@ -46,7 +44,7 @@ export const getNhostSession = async (
   context: GetServerSidePropsContext
 ): Promise<NhostSession | null> => {
   const nhost = await createServerSideClient(backendUrl, context)
-  const { accessToken, refreshToken, user } = nhost.auth.client.interpreter!.state.context
+  const { accessToken, refreshToken, user } = nhost.auth.client.interpreter!.getSnapshot().context
   return nhost.auth.isAuthenticated()
     ? {
         accessToken: accessToken.value!,

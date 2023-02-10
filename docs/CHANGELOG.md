@@ -1,5 +1,43 @@
 # @nhost/docs
 
+## 0.0.10
+
+### Patch Changes
+
+- 200e9f77: chore(deps): update dependency @types/react-dom to v18.0.10
+
+## 0.0.9
+
+### Patch Changes
+
+- b21222b3: chore(deps): update dependency @types/node to v16
+
+## 0.0.8
+
+### Patch Changes
+
+- 7f251111: Use `NhostProvider` instead of `NhostReactProvider` and `NhostNextProvider`
+
+  `NhostReactProvider` and `NhostNextProvider` are now deprecated
+
+## 0.0.7
+
+### Patch Changes
+
+- 1b8f5050: fix(deps): update docusaurus monorepo to v2.2.0
+
+## 0.0.6
+
+### Patch Changes
+
+- 23274dee: chore(docs): update permission variables image
+
+## 0.0.5
+
+### Patch Changes
+
+- ca012d79: docs(workos): WorkOS Docs
+
 ## 0.0.4
 
 ### Patch Changes

@@ -1,11 +1,27 @@
 import FormData from 'form-data'
 
-import { HasuraAuthClient } from '@nhost/hasura-auth-js'
+// TODO shared with other packages
+export type ErrorPayload = {
+  error: string
+  status: number
+  message: string
+}
+
+// TODO shared with other packages
+export interface ActionErrorState {
+  /**
+   * @return `true` if an error occurred
+   * @depreacted use `!isSuccess` or `!!error` instead
+   * */
+  isError: boolean
+  /** Provides details about the error */
+  error: ErrorPayload | null
+}
 
 // * Avoid circular references and broken links in docusaurus generated docs
-export interface NhostClientReturnType {
-  auth: HasuraAuthClient
-  storage: { url: string }
+export interface FileUploadConfig {
+  accessToken?: string
+  url: string
   adminSecret?: string
 }
 
@@ -32,10 +48,25 @@ export type StorageUploadResponse =
   | { fileMetadata: FileResponse; error: null }
   | { fileMetadata: null; error: Error }
 
-export interface StorageGetUrlParams {
+export interface StorageImageTransformationParams {
+  /** Image width, in pixels */
+  width?: number
+  /** Image height, in pixels */
+  height?: number
+  /** Image quality, between 1 and 100, 100 being the best quality */
+  quality?: number
+  /** Image blur, between 0 and 100 */
+  blur?: number
+  // TODO not implemented yet in hasura-storage
+  /** Image radius */
+  // radius?: number
+}
+export interface StorageGetUrlParams extends StorageImageTransformationParams {
   fileId: string
 }
 
+// TODO not implemented yet in hasura-storage
+// export interface StorageGetPresignedUrlParams extends StorageImageTransformationParams {
 export interface StorageGetPresignedUrlParams {
   fileId: string
 }
@@ -73,6 +104,8 @@ export type ApiUploadResponse =
   | { fileMetadata: FileResponse; error: null }
   | { fileMetadata: null; error: Error }
 
+// TODO not implemented yet in hasura-storage
+// export interface ApiGetPresignedUrlParams extends StorageImageTransformationParams {
 export interface ApiGetPresignedUrlParams {
   fileId: string
 }

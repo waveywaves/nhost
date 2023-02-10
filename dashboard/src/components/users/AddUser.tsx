@@ -4,7 +4,7 @@ import { Modal } from '@/ui/Modal';
 import Button from '@/ui/v2/Button';
 import Input from '@/ui/v2/Input';
 import Text from '@/ui/v2/Text';
-import { generateRemoteAppUrl } from '@/utils/helpers';
+import generateAppServiceUrl from '@/utils/common/generateAppServiceUrl';
 import { triggerToast } from '@/utils/toast';
 import { useApolloClient } from '@apollo/client';
 import axios from 'axios';
@@ -43,9 +43,11 @@ export function AddUserModal({ modalIsOpen, setModalIsOpen }: any) {
       return;
     }
 
-    const signUpUrl = `${generateRemoteAppUrl(
+    const signUpUrl = `${generateAppServiceUrl(
       currentApplication?.subdomain,
-    )}/v1/auth/signup/email-password`;
+      currentApplication?.region.awsName,
+      'auth',
+    )}/signup/email-password`;
 
     try {
       await axios.post(signUpUrl, {
@@ -73,7 +75,7 @@ export function AddUserModal({ modalIsOpen, setModalIsOpen }: any) {
   };
   return (
     <Modal showModal={modalIsOpen} close={() => setModalIsOpen(false)}>
-      <div className="px-4 py-4 text-left w-modal2">
+      <div className="w-modal2 px-4 py-4 text-left">
         <div className="grid grid-flow-row gap-2">
           <Text variant="h3" component="h2" className="text-center">
             Add New User
@@ -150,7 +152,7 @@ export function AddUser() {
       <Button
         variant="outlined"
         color="secondary"
-        className="w-full ml-2"
+        className="ml-2 w-full"
         onClick={() => setModalIsOpen(true)}
       >
         Add User

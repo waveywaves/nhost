@@ -32,9 +32,12 @@ export default function ConnectGithubModal({ close }: ConnectGithubModalProps) {
     useState<ConnectGithubModalState>('CONNECTING');
   const [selectedRepoId, setSelectedRepoId] = useState<string | null>(null);
 
-  const { data, loading, error } = useGetGithubRepositoriesQuery({
-    pollInterval: 2000,
-  });
+  const { data, loading, error, startPolling } =
+    useGetGithubRepositoriesQuery();
+
+  useEffect(() => {
+    startPolling(2000);
+  }, [startPolling]);
 
   const handleSelectAnotherRepository = () => {
     setSelectedRepoId(null);
@@ -144,7 +147,7 @@ export default function ConnectGithubModal({ close }: ConnectGithubModalProps) {
               </div>
             </div>
             <RetryableErrorBoundary>
-              <div className=" h-import divide-y-1 divide-divide overflow-y-auto border-t-1 border-b-1">
+              <div className="h-import  divide-y-1 divide-divide overflow-y-auto border-t-1 border-b-1">
                 {githubRepositoriesToDisplay.map((repo) => (
                   <Repo
                     key={repo.id}

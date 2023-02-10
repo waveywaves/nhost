@@ -1,5 +1,102 @@
 # @nhost/vue
 
+## 1.13.2
+
+### Patch Changes
+
+- 200e9f77: chore(deps): update dependency @types/react-dom to v18.0.10
+- Updated dependencies [200e9f77]
+  - @nhost/nhost-js@1.13.1
+
+## 1.13.1
+
+### Patch Changes
+
+- c2706c7d: Export commonly used types
+
+  `BackendUrl`, `ErrorPayload`, `NhostSession`, `Subdomain`, and `User` are now exported in all our SDKs
+
+- d42c27ae: Add explicit reutrn types to Vue composables
+
+## 1.13.0
+
+### Patch Changes
+
+- @nhost/nhost-js@1.13.0
+
+## 1.12.1
+
+### Patch Changes
+
+- 85683547: Allow `useFileUpload` to be reused
+  Once a file were uploaded with `useFileUpload`, it was not possible to reuse it as the returned file id were kept in memory and sent again to hasura-storage, leading to a conflict error.
+  File upload now makes sure to clear the metadata information from the first file before uploading the second file.
+  - @nhost/nhost-js@1.12.1
+
+## 1.12.0
+
+### Patch Changes
+
+- b21222b3: chore(deps): update dependency @types/node to v16
+- 54df0df4: Remove unused immer dependency
+- Updated dependencies [b21222b3]
+- Updated dependencies [19cca7f4]
+- Updated dependencies [65687bee]
+- Updated dependencies [54df0df4]
+- Updated dependencies [1a9e1fde]
+- Updated dependencies [5be9abb0]
+- Updated dependencies [54df0df4]
+  - @nhost/nhost-js@1.12.0
+
+## 0.7.0
+
+### Minor Changes
+
+- 57db5b83: Refactor: remove dependency to `@nhost/core`
+
+### Patch Changes
+
+- Updated dependencies [57db5b83]
+  - @nhost/hasura-storage-js@0.8.0
+  - @nhost/nhost-js@1.7.0
+
+## 0.6.2
+
+### Patch Changes
+
+- b030eae9: chore(deps): update dependency @xstate/inspect to ^0.7.0
+
+## 0.6.1
+
+### Patch Changes
+
+- Updated dependencies [66b4f3d0]
+- Updated dependencies [2e6923dc]
+- Updated dependencies [ef117c28]
+- Updated dependencies [aebb8225]
+  - @nhost/core@0.9.4
+  - @nhost/hasura-storage-js@0.7.4
+  - @nhost/nhost-js@1.6.2
+
+## 0.6.0
+
+### Minor Changes
+
+- f6d2042a: `useFileUpload` composable to upload a file useFileUpload composable
+
+### Patch Changes
+
+- 843087cb: Make `useUserRoles` reactive
+
+## 0.5.3
+
+### Patch Changes
+
+- Updated dependencies [f2aaff05]
+  - @nhost/core@0.9.3
+  - @nhost/hasura-storage-js@0.7.3
+  - @nhost/nhost-js@1.6.1
+
 ## 0.5.2
 
 ### Patch Changes

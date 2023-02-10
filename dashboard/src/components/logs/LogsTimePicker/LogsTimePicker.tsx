@@ -55,16 +55,14 @@ function LogsTimePicker({
   };
 
   return (
-    <div className="grid items-center self-center grid-flow-row mx-auto">
+    <div className="mx-auto grid grid-flow-row items-center self-center">
       <div className="border border-[#EAEDF0] px-4 py-2">
         <Input
           value={format(selectedDate, 'HH:mm:ss')}
           style={{ width: '135px' }}
           id="time-picker"
-          componentsProps={{
-            formControl: {
-              className: 'grid grid-flow-col gap-x-3',
-            },
+          slotProps={{
+            formControl: { className: 'grid grid-flow-col gap-x-3' },
             label: { sx: { fontSize: '14px' } },
           }}
           onChange={handleTimePicking}
@@ -85,7 +83,7 @@ function LogsTimePicker({
           }}
         />
       </div>
-      <div className="grid justify-end grid-flow-col px-4 py-2 gap-x-4">
+      <div className="grid grid-flow-col justify-end gap-x-4 px-4 py-2">
         <Button variant="outlined" color="secondary" onClick={handleCancel}>
           Cancel
         </Button>

@@ -1,4 +1,6 @@
+export type { BackendUrl, ErrorPayload, NhostSession, Subdomain, User } from '@nhost/nhost-js'
 export * from './client'
+export * from './components'
 export * from './provider'
 export * from './useAccessToken'
 export * from './useAddSecurityKey'

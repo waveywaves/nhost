@@ -1,0 +1,122 @@
+version: '3.6'
+
+x-uffizzi:
+  ingress:
+    service: loadbalancer
+    port: 8888
+
+services:
+  postgres:
+    image: postgres
+    volumes:
+      # - /var/lib/postgresql/data
+      - ./examples/docker-compose/initdb.d/:/docker-entrypoint-initdb.d:ro
+    environment:
+      POSTGRES_PASSWORD: pg-password-never-use-this-value
+
+  graphql-engine:
+    image: hasura/graphql-engine:v2.15.2
+    environment:
+      HASURA_GRAPHQL_DATABASE_URL: 'postgres://postgres:pg-password-never-use-this-value@localhost:5432/postgres'
+      HASURA_GRAPHQL_JWT_SECRET: '{"type":"HS256", "key":"5152fa850c02dc222631cca898ed1485821a70912a6e3649c49076912daa3b62182ba013315915d64f40cddfbb8b58eb5bd11ba225336a6af45bbae07ca873f3","issuer":"hasura-auth"}'
+      HASURA_GRAPHQL_ADMIN_SECRET: hello123
+      HASURA_GRAPHQL_UNAUTHORIZED_ROLE: public
+      HASURA_GRAPHQL_LOG_LEVEL: debug
+      HASURA_GRAPHQL_ENABLE_CONSOLE: 'true'
+      HASURA_GRAPHQL_SERVER_PORT: 8081
+    deploy:
+      resources:
+        limits:
+          memory: 250M
+
+  auth:
+    image: nhost/hasura-auth:0.16.2
+#    volumes:
+#      - ./emails:/app/email-templates
+    environment:
+      AUTH_HOST: '0.0.0.0'
+      AUTH_PORT: 4000
+      HASURA_GRAPHQL_DATABASE_URL: 'postgres://postgres:pg-password-never-use-this-value@localhost:5432/postgres'
+      HASURA_GRAPHQL_GRAPHQL_URL: http://localhost:8081/v1/graphql
+      HASURA_GRAPHQL_JWT_SECRET: '{"type":"HS256", "key":"5152fa850c02dc222631cca898ed1485821a70912a6e3649c49076912daa3b62182ba013315915d64f40cddfbb8b58eb5bd11ba225336a6af45bbae07ca873f3","issuer":"hasura-auth"}'
+      HASURA_GRAPHQL_ADMIN_SECRET: hello123
+      AUTH_CLIENT_URL: http://localhost:4000
+      AUTH_SMTP_HOST: mailhog
+      AUTH_SMTP_PORT: 1025
+      AUTH_SMTP_USER: user
+      AUTH_SMTP_PASS: password
+      AUTH_SMTP_SENDER: mail@example.com
+  
+  storage:
+    image: nhost/hasura-storage:0.3.1
+    environment:
+      PUBLIC_URL: http://localhost:1337
+      HASURA_METADATA: 1
+      HASURA_ENDPOINT: http://localhost:8081/v1
+      HASURA_GRAPHQL_ADMIN_SECRET: hello123
+      S3_ACCESS_KEY: storage-access-key-never-use-this-value
+      S3_SECRET_KEY: storage-secret-key-never-use-this-value
+      S3_ENDPOINT: http://localhost:8484
+      S3_BUCKET: nhost
+      POSTGRES_MIGRATIONS: 1
+      POSTGRES_MIGRATIONS_SOURCE: 'postgres://postgres:pg-password-never-use-this-value@localhost:5432/postgres?sslmode=disable'
+    command: serve
+
+  functions:
+    image: nhost/functions:0.1.8
+    volumes:
+      # - ./:/opt/project
+      - functions_node_modules:/opt/project/node_modules
+      - /opt/project/data/
+      - /opt/project/initdb.d/
+
+  minio:
+    image: 'minio/minio:latest'
+    entrypoint: ['/bin/sh', '-c']
+    command: 'mkdir -p /data/nhost && /opt/bin/minio server --address :8484 /data'
+    environment:
+      MINIO_ROOT_USER: storage-access-key-never-use-this-value
+      MINIO_ROOT_PASSWORD: storage-secret-key-never-use-this-value
+    volumes:
+      - /data
+
+  mailhog:
+    image: mailhog/mailhog
+    environment:
+      SMTP_HOST: mailhog
+      SMTP_PORT: 1025
+      SMTP_PASS: password
+      SMTP_USER: user
+      SMTP_SECURE: 'false'
+      SMTP_SENDER: hbp@hbp.com
+    volumes:
+      - /maildir
+#      - ./data/mailhog:/maildir
+
+#  dashboard:
+#    image: nhost/dashboard:0.7.4
+#    ports:
+#      - "3030:3000"
+
+  loadbalancer:
+    image: nginx:1
+    environment:
+      PORT: "8888"
+      GRAPHQL_PORT: "8080"
+      CONSOLE_PORT: "8080"
+      AUTH_PORT: "4000"
+      STORAGE_PORT: "8000"
+      FUNCTIONS_PORT: "3000"
+      DASHBOARD_PORT: "3000"
+      HASHURA_PORT: "1337"
+      MAILHOG_PORT: "8025"
+      MINIO_PORT: "8484"
+    volumes:
+      - ./examples/docker-compose/nginx/:/etc/nginx/templates
+    deploy:
+      resources:
+        limits:
+          memory: 125M
+
+volumes:
+  functions_node_modules:

@@ -9,9 +9,10 @@ import {
   useUpdateAppMutation,
 } from '@/generated/graphql';
 import { useCurrentWorkspaceAndApplication } from '@/hooks/useCurrentWorkspaceAndApplication';
-import CheckIcon from '@/ui/v2/icons/CheckIcon';
 import Input from '@/ui/v2/Input';
+import CheckIcon from '@/ui/v2/icons/CheckIcon';
 import { discordAnnounce } from '@/utils/discordAnnounce';
+import { slugifyString } from '@/utils/helpers';
 import { updateOwnCache } from '@/utils/updateOwnCache';
 import { useApolloClient } from '@apollo/client';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -32,7 +33,7 @@ export type ProjectNameValidationSchema = Yup.InferType<
   typeof projectNameValidationSchema
 >;
 
-const toastStyleProps = {
+export const toastStyleProps = {
   style: {
     minWidth: '250px',
     backgroundColor: 'rgb(33 50 75)',
@@ -52,15 +53,16 @@ export default function SettingsGeneralPage() {
   const [deleteApplication] = useDeleteApplicationMutation({
     variables: { appId: currentApplication?.id },
   });
+  const { currentWorkspace } = useCurrentWorkspaceAndApplication();
   const router = useRouter();
 
   const form = useForm<ProjectNameValidationSchema>({
+    mode: 'onSubmit',
     reValidateMode: 'onSubmit',
     defaultValues: {
       name: currentApplication?.name,
     },
     resolver: yupResolver(projectNameValidationSchema),
-    mode: 'onSubmit',
     criteriaMode: 'all',
     shouldFocusError: true,
   });
@@ -68,11 +70,31 @@ export default function SettingsGeneralPage() {
   const { register, formState } = form;
 
   const handleProjectNameChange = async (data: ProjectNameValidationSchema) => {
+    // In this bit of code we spread the props of the current path (e.g. /workspace/...) and add one key-value pair: `updating: true`.
+    // We want to indicate that the currently we're in the process of running a mutation state that will affect the routing behaviour of the website
+    // i.e. redirecting to 404 if there's no workspace/project with that slug.
+    await router.replace({
+      pathname: router.pathname,
+      query: { ...router.query, updating: true },
+    });
+
+    const newProjectSlug = slugifyString(data.name);
+
+    if (newProjectSlug.length < 1 || newProjectSlug.length > 32) {
+      form.setError('name', {
+        message:
+          'A unique URL cannot be generated from this name. Please remove invalid characters if there are any or try a different name.',
+      });
+
+      return;
+    }
+
     const updateAppMutation = updateApp({
       variables: {
         id: currentApplication.id,
         app: {
-          ...data,
+          name: data.name,
+          slug: newProjectSlug,
         },
       },
     });
@@ -81,14 +103,19 @@ export default function SettingsGeneralPage() {
       updateAppMutation,
       {
         loading: `Project name is being updated...`,
-        success: `Project name updated`,
-        error: `Error while trying to update project name`,
+        success: `Project name has been updated successfully.`,
+        error: `An error occurred while trying to update project name.`,
       },
       toastStyleProps,
     );
     try {
-      await client.refetchQueries({ include: ['getOneUser'] });
+      await client.refetchQueries({
+        include: ['getOneUser'],
+      });
       form.reset(undefined, { keepValues: true, keepDirty: false });
+      await router.push(
+        `/${currentWorkspace.slug}/${newProjectSlug}/settings/general`,
+      );
     } catch (error) {
       await discordAnnounce(
         error.message || 'Error while trying to update application cache',
@@ -112,23 +139,21 @@ export default function SettingsGeneralPage() {
 
   return (
     <Container
-      className="grid grid-flow-row gap-8 bg-transparent"
-      wrapperClassName="bg-fafafa"
+      className="grid max-w-5xl grid-flow-row gap-8 bg-transparent"
+      rootClassName="bg-transparent"
     >
-      <SettingsContainer
-        title="Project Name"
-        description="The name of the project."
-        formId="project-name"
-        primaryActionButtonProps={{
-          disabled:
-            formState.isSubmitting || !formState.isValid || !formState.isDirty,
-        }}
-      >
-        <FormProvider {...form}>
-          <Form
-            onSubmit={handleProjectNameChange}
-            id="project-name"
+      <FormProvider {...form}>
+        <Form onSubmit={handleProjectNameChange}>
+          <SettingsContainer
+            title="Project Name"
+            description="The name of the project."
             className="grid grid-flow-row px-4 lg:grid-cols-4"
+            slotProps={{
+              submitButton: {
+                disabled: !formState.isValid || !formState.isDirty,
+                loading: formState.isSubmitting,
+              },
+            }}
           >
             <Input
               {...register('name')}
@@ -136,21 +161,23 @@ export default function SettingsGeneralPage() {
               variant="inline"
               fullWidth
               hideEmptyHelperText
-              componentsProps={{
-                helperText: {
-                  className: 'col-start-1',
-                },
+              helperText={formState.errors.name?.message}
+              error={Boolean(formState.errors.name)}
+              slotProps={{
+                helperText: { className: 'col-start-1' },
               }}
             />
-          </Form>
-        </FormProvider>
-      </SettingsContainer>
+          </SettingsContainer>
+        </Form>
+      </FormProvider>
+
       <SettingsContainer
         title="Delete Project"
         description="The project will be permanently deleted, including its database, metadata, files, etc. This action is irreversible and can not be undone."
         submitButtonText="Delete"
-        className="border-[#F87171]"
+        rootClassName="border-[#F87171]"
         primaryActionButtonProps={{
+          type: 'button',
           color: 'error',
           variant: 'contained',
           onClick: () => {
@@ -160,12 +187,14 @@ export default function SettingsGeneralPage() {
                 <RemoveApplicationModal
                   close={closeAlertDialog}
                   handler={handleDeleteApplication}
+                  className="p-0"
                 />
               ),
               props: {
                 primaryButtonText: 'Delete',
                 primaryButtonColor: 'error',
-                maxWidth: 'lg',
+                PaperProps: { className: 'max-w-sm' },
+                fullWidth: true,
                 hideTitle: true,
                 hidePrimaryAction: true,
                 hideSecondaryAction: true,
@@ -179,13 +208,5 @@ export default function SettingsGeneralPage() {
 }
 
 SettingsGeneralPage.getLayout = function getLayout(page: ReactElement) {
-  return (
-    <SettingsLayout
-      mainContainerProps={{
-        className: 'bg-fafafa',
-      }}
-    >
-      {page}
-    </SettingsLayout>
-  );
+  return <SettingsLayout>{page}</SettingsLayout>;
 };

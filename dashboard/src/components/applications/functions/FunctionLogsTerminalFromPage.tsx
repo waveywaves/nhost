@@ -13,13 +13,16 @@ export function FunctionsLogsTerminalPage({ functionName }: any) {
   const { currentApplication } = useCurrentWorkspaceAndApplication();
   const [normalizedFunctionData, setNormalizedFunctionData] = useState(null);
 
-  const { data } = useGetFunctionLogQuery({
+  const { data, startPolling } = useGetFunctionLogQuery({
     variables: {
       subdomain: currentApplication.subdomain,
       functionPaths: [functionName?.split('/').slice(1, 3).join('/')],
     },
-    pollInterval: 3000,
   });
+
+  useEffect(() => {
+    startPolling(3000);
+  }, [startPolling]);
 
   useEffect(() => {
     if (!data || data.getFunctionLogs.length === 0) {
@@ -38,8 +41,8 @@ export function FunctionsLogsTerminalPage({ functionName }: any) {
     normalizedFunctionData.logs.length === 0
   ) {
     return (
-      <div className="w-full text-white rounded-lg">
-        <div className="px-4 py-4 overflow-auto font-mono rounded-lg shadow-sm h-terminal bg-log">
+      <div className="w-full rounded-lg text-white">
+        <div className="h-terminal overflow-auto rounded-lg bg-log px-4 py-4 font-mono shadow-sm">
           <div className="font-mono text-xs text-grey">
             There are no stored logs yet. Try calling your function for logs to
             appear.
@@ -50,12 +53,12 @@ export function FunctionsLogsTerminalPage({ functionName }: any) {
     );
   }
   return (
-    <div className="w-full text-white rounded-lg">
-      <div className="px-4 py-4 overflow-auto font-mono rounded-lg shadow-sm h-terminal bg-log">
+    <div className="w-full rounded-lg text-white">
+      <div className="h-terminal overflow-auto rounded-lg bg-log px-4 py-4 font-mono shadow-sm">
         {normalizedFunctionData.logs.map((log) => (
           <div
             key={`${log.date}-${log.message.slice(66)}`}
-            className="flex text-sm "
+            className=" flex text-sm"
           >
             <div id={`#-${log.date}`}>
               <pre className="inline">

@@ -21,8 +21,15 @@ export default function useDatabaseSizeOfApplication(
     queryKey,
     () =>
       fetchProjectDatabaseSize({
-        subdomain: currentApplication?.subdomain,
-        adminSecret: currentApplication?.hasuraGraphqlAdminSecret,
+        subdomain:
+          process.env.NEXT_PUBLIC_ENV === 'dev'
+            ? 'localhost'
+            : currentApplication?.subdomain,
+        region: currentApplication?.region?.awsName,
+        adminSecret:
+          process.env.NEXT_PUBLIC_ENV === 'dev'
+            ? 'nhost-admin-secret'
+            : currentApplication?.hasuraGraphqlAdminSecret,
       }),
     {
       ...queryOptions,

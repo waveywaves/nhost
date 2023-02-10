@@ -13,8 +13,13 @@ module.exports = {
       ...defaultTheme.screens,
     },
     extend: {
+      animation: {
+        'spin-reverse': 'spin 1.5s linear infinite reverse',
+      },
       colors: {
-        primary: 'var(--primary)',
+        primary: '#0052cd',
+        'primary-light': '#ebf3ff',
+        'primary-dark': '#063799',
         'primary-2': 'var(--primary-2)',
         'secondary-2': 'var(--secondary-2)',
         hover: 'var(--hover)',
@@ -55,7 +60,6 @@ module.exports = {
         log: '#F4F7F9',
         input: '#C2CAD6',
         ish: '#f6f9fc',
-        fafafa: '#fafafa',
         picker: 'rgba(33, 50, 75, 1)',
         divide: 'rgba(0, 35, 88, 0.16)',
         greyscaleDark: '#21324B',
@@ -79,6 +83,13 @@ module.exports = {
         free: 'rgba(55, 135, 255, 0.1)',
         github: '#24292E;',
         card: '#F4F7F9',
+        'greyscale-50': '#F4F7F9',
+        'greyscale-100': '#E6EAEF',
+        'greyscale-200': '#D8DFE7',
+        'greyscale-300': '#CCD4DE',
+        'greyscale-400': '#BFCAD5',
+        'greyscale-500': '#B4C0CE',
+        'greyscale-600': '#A9B6C7',
       },
       textColor: {
         base: 'var(--text-base)',

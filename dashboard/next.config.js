@@ -1,3 +1,4 @@
+const path = require('path');
 const withBundleAnalyzer = require('@next/bundle-analyzer')({
   enabled: process.env.ANALYZE === 'true',
 });
@@ -5,6 +6,10 @@ const withBundleAnalyzer = require('@next/bundle-analyzer')({
 module.exports = withBundleAnalyzer({
   reactStrictMode: true,
   swcMinify: false,
+  output: 'standalone',
+  experimental: {
+    outputFileTracingRoot: path.join(__dirname, '../../'),
+  },
   eslint: {
     dirs: ['src'],
   },
@@ -59,6 +64,11 @@ module.exports = withBundleAnalyzer({
       {
         source: '/:workspaceSlug/:appSlug/variables',
         destination: '/:workspaceSlug/:appSlug/settings/environment-variables',
+        permanent: true,
+      },
+      {
+        source: '/:workspaceSlug/:appSlug/users/:userId',
+        destination: '/:workspaceSlug/:appSlug/users?userId=:userId',
         permanent: true,
       },
     ];

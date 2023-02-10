@@ -1,5 +1,64 @@
 # @nhost/hasura-auth-js
 
+## 1.12.1
+
+### Patch Changes
+
+- 200e9f77: chore(deps): update dependency @types/react-dom to v18.0.10
+
+## 1.12.0
+
+### Minor Changes
+
+- 19cca7f4: Deprecate Axios
+
+  Axios will be replaced by cross-fetch in the near future.
+
+  To prepare for the transition, we are deprecating the old signature for the following methods:
+
+  - `nhost.functions.call()`
+  - `nhost.graphql.request()`
+
+  Both methods now accept an optional `useAxios` parameter that can be used to opt-in (`{ useAxios: false }`) to the new method signature. By default, `useAxios` is set to `true` so you can update it on your own time.
+
+  When using `useAxios: false`:
+
+  - the only allowed option is `headers: Record<string,string>`
+  - the returned value matches values foreseen in the next major version:
+    - `nhost.functions.call`:
+      - `error` is using the same standard error type as in `hasura-auth-js` and `hasura-storage-js`
+      - `res` is using `{ status: number; statusText: string; data: T }`
+    - `nhost.graphql.request`:
+      - `error` is either using the standard error type, or `GraphQlError[]`
+
+### Patch Changes
+
+- b21222b3: chore(deps): update dependency @types/node to v16
+- 54df0df4: Improve the initialisation of the internal authentication state to support React 18 strict mode
+
+## 1.7.0
+
+### Minor Changes
+
+- 57db5b83: Refactor: remove dependency to `@nhost/core`
+
+## 1.6.4
+
+### Patch Changes
+
+- 66b4f3d0: Bump axios to v1.2.0
+- 2e6923dc: Refactoring: use xstate's `interpreter.getSnapshot()` instead of `interpreter.state`
+- Updated dependencies [66b4f3d0]
+- Updated dependencies [2e6923dc]
+  - @nhost/core@0.9.4
+
+## 1.6.3
+
+### Patch Changes
+
+- Updated dependencies [f2aaff05]
+  - @nhost/core@0.9.3
+
 ## 1.6.2
 
 ### Patch Changes

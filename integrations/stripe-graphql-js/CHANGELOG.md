@@ -1,5 +1,23 @@
 # @nhost/stripe-graphql-js
 
+## 0.0.8
+
+### Patch Changes
+
+- 200e9f77: chore(deps): update dependency @types/react-dom to v18.0.10
+
+## 0.0.7
+
+### Patch Changes
+
+- b21222b3: chore(deps): update dependency @types/node to v16
+
+## 0.0.6
+
+### Patch Changes
+
+- 93db7182: feat(stripe-graphql-js): add charges, payment intents and connected accounts
+
 ## 0.0.5
 
 ### Patch Changes

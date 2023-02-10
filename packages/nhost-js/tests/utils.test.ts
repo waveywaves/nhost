@@ -1,3 +1,4 @@
+import { describe, it, expect } from 'vitest'
 import { urlFromSubdomain } from '../src/utils/helpers'
 
 describe('urlFromParams', () => {
@@ -60,6 +61,22 @@ describe('urlFromParams', () => {
         const url = urlFromSubdomain({ subdomain: 'localhost:2001' }, 'auth')
 
         expect(url).toBe('http://localhost:2001/v1/auth')
+      })
+    })
+
+    describe('"localhost" with a placeholder for custom port', () => {
+      it('should use the specified placeholder and return "http://localhost:__FOO_BAR__/v1/auth"', async () => {
+        const url = urlFromSubdomain({ subdomain: 'localhost:__FOO_BAR__' }, 'auth')
+
+        expect(url).toBe('http://localhost:__FOO_BAR__/v1/auth')
+      })
+    })
+
+    describe('"localhost" with invalid custom port', () => {
+      it('should throw an error"', async () => {
+        expect(() => {
+          urlFromSubdomain({ subdomain: 'localhost:_invalid_FOO_BAR__' }, 'auth')
+        }).toThrow()
       })
     })
   })

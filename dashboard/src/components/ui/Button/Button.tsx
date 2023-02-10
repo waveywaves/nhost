@@ -26,6 +26,9 @@ export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   padding?: 'none' | Array<'horizontal' | 'vertical'>;
 }
 
+/**
+ * @deprecated Use `@/ui/v2/Button` instead.
+ */
 export const Button: React.FC<ButtonProps> = forwardRef(
   (props: ButtonProps, buttonRef) => {
     const {
@@ -92,14 +95,14 @@ export const Button: React.FC<ButtonProps> = forwardRef(
         {loading ? null : children}
 
         {loading && showLoadingText && (
-          <div className="flex flex-row w-full mx-auto ">
+          <div className=" mx-auto flex w-full flex-row">
             Loading
             <Loading className="ml-3" />
           </div>
         )}
 
         {loading && !showLoadingText && (
-          <div className="flex flex-row w-full mx-auto ">
+          <div className=" mx-auto flex w-full flex-row">
             <Loading className="" />
           </div>
         )}

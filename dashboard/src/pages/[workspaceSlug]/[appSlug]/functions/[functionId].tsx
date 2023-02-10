@@ -8,7 +8,8 @@ import ProjectLayout from '@/components/layout/ProjectLayout';
 import { useCurrentWorkspaceAndApplication } from '@/hooks/useCurrentWorkspaceAndApplication';
 import { useGetAllUserWorkspacesAndApplications } from '@/hooks/useGetAllUserWorkspacesAndApplications';
 import { Text } from '@/ui/Text';
-import { generateRemoteAppUrl, yieldFunction } from '@/utils/helpers';
+import generateAppServiceUrl from '@/utils/common/generateAppServiceUrl';
+import { yieldFunction } from '@/utils/helpers';
 import { useGetAppFunctionsMetadataQuery } from '@/utils/__generated__/graphql';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
@@ -84,15 +85,19 @@ export default function FunctionDetailsPage() {
               </Text>
               <a
                 className="ml-2 text-xs font-medium text-greyscaleGrey"
-                href={`${generateRemoteAppUrl(
+                href={`${generateAppServiceUrl(
                   currentApplication.subdomain,
-                )}/v1/functions${currentFunction?.route}`}
+                  currentApplication.region.awsName,
+                  'functions',
+                )}${currentFunction?.route}`}
                 target="_blank"
                 rel="noreferrer"
               >
-                {`${generateRemoteAppUrl(
+                {`${generateAppServiceUrl(
                   currentApplication.subdomain,
-                )}/v1/functions${currentFunction?.route}`}
+                  currentApplication.region.awsName,
+                  'functions',
+                )}${currentFunction?.route}`}
               </a>
             </div>
           </div>

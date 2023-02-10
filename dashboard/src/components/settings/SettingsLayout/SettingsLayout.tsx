@@ -1,3 +1,4 @@
+import RetryableErrorBoundary from '@/components/common/RetryableErrorBoundary';
 import type { ProjectLayoutProps } from '@/components/layout/ProjectLayout';
 import ProjectLayout from '@/components/layout/ProjectLayout';
 import type { SettingsSidebarProps } from '@/components/settings/SettingsSidebar';
@@ -33,8 +34,8 @@ export default function SettingsLayout({
         {...sidebarProps}
       />
 
-      <div className="flex w-full flex-auto flex-col overflow-x-hidden">
-        {children}
+      <div className="flex w-full flex-auto flex-col overflow-x-hidden bg-[#fafafa]">
+        <RetryableErrorBoundary>{children}</RetryableErrorBoundary>
       </div>
     </ProjectLayout>
   );

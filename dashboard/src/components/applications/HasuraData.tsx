@@ -1,11 +1,16 @@
 import { ConnectionDetail } from '@/components/applications/ConnectionDetail';
 import { LoadingScreen } from '@/components/common/LoadingScreen';
-import ExternalLink from '@/components/icons/ExternalIcon';
+import useIsPlatform from '@/hooks/common/useIsPlatform';
 import { useCurrentWorkspaceAndApplication } from '@/hooks/useCurrentWorkspaceAndApplication';
 import Button from '@/ui/v2/Button';
+import ArrowSquareOutIcon from '@/ui/v2/icons/ArrowSquareOutIcon';
 import Link from '@/ui/v2/Link';
 import Text from '@/ui/v2/Text';
-import { generateRemoteAppUrl } from '@/utils/helpers';
+import generateAppServiceUrl, {
+  defaultLocalBackendSlugs,
+  defaultRemoteBackendSlugs,
+} from '@/utils/common/generateAppServiceUrl';
+import { LOCAL_HASURA_URL } from '@/utils/env';
 import Image from 'next/image';
 
 interface HasuraDataProps {
@@ -14,6 +19,7 @@ interface HasuraDataProps {
 
 export function HasuraData({ close }: HasuraDataProps) {
   const { currentApplication } = useCurrentWorkspaceAndApplication();
+  const isPlatform = useIsPlatform();
 
   if (
     !currentApplication?.subdomain ||
@@ -23,9 +29,15 @@ export function HasuraData({ close }: HasuraDataProps) {
   }
 
   const hasuraUrl =
-    process.env.NEXT_PUBLIC_ENV === 'dev'
-      ? process.env.NEXT_PUBLIC_NHOST_HASURA_URL || 'http://localhost:9695'
-      : generateRemoteAppUrl(currentApplication.subdomain);
+    process.env.NEXT_PUBLIC_ENV === 'dev' || !isPlatform
+      ? `${LOCAL_HASURA_URL}/console`
+      : generateAppServiceUrl(
+          currentApplication?.subdomain,
+          currentApplication?.region.awsName,
+          'hasura',
+          defaultLocalBackendSlugs,
+          { ...defaultRemoteBackendSlugs, hasura: '/console' },
+        );
 
   return (
     <div className="mx-auto w-full max-w-md px-6 py-4 text-left">
@@ -59,14 +71,14 @@ export function HasuraData({ close }: HasuraDataProps) {
 
         <div className="mt-6 grid grid-flow-row gap-2">
           <Link
-            href={`${hasuraUrl}/console`}
+            href={hasuraUrl}
             target="_blank"
             rel="noreferrer noopener"
             className="grid grid-flow-col items-center justify-center gap-1 rounded-[4px] bg-btn p-2 text-sm+ font-medium text-white hover:ring-2 motion-safe:transition-all"
             underline="none"
           >
             Open Hasura
-            <ExternalLink className="ml-0.5 h-4 w-4" />
+            <ArrowSquareOutIcon className="h-4 w-4" />
           </Link>
 
           {close && (
