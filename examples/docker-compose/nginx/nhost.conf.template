@@ -11,7 +11,7 @@ server {
                  proxy_pass      http://localhost:${AUTH_PORT}/;
                }
                location /v1/storage/ {
-                 proxy_pass      http://localhost:${STORAGE_PORT}/;
+                 proxy_pass      http://localhost:${STORAGE_PORT}/v1/;
                }
                location /v1/functions/ {
                  proxy_pass      http://localhost:${FUNCTIONS_PORT}/;
